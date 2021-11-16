@@ -1,0 +1,102 @@
+import socket
+import time
+import threading
+from tkinter import *
+
+person2=Tk()
+person2.geometry("540x762")
+person2.config(bg="white")
+photo1=PhotoImage(file='stimage.png')
+
+def function1() :
+    thread1 = threading.Thread(target=function_receive)
+    thread1.start()
+def function2():
+    thread2=threading.Thread(target=function_send)
+    thread2.start()
+def function_receive():
+    ls = socket.socket()
+    port_number = 7999
+    most = 99
+    ls.bind(('#.#.#.#', port_number))
+    ls.listen(most)
+    (other_person, ip) = ls.accept()
+
+    secret_key = 3
+    p = 23
+    g = 5
+    A = (g ** secret_key) % p
+    B=other_person.recv(1024).decode()
+    other_person.send(bytes(str(A), 'utf8'))
+    key1=(int(B)**secret_key)%p
+
+    while True:
+        mr = other_person.recv(1024).decode()
+        decrypted_message=''
+        for i in mr:
+            decrypted_message=decrypted_message+chr(ord(i)-key1)
+        mr=decrypted_message
+        if not mr == "":
+            time.sleep(2)
+            chatbox.insert(END, "Bob : " + mr)
+            chatbox.see(END)
+
+
+n=0
+def function_send():
+    global n,key
+    if n==0:
+        n=socket.socket()
+        ip='#.#.#.#'
+        port=8999
+        n.connect((ip,port))
+        msg=entrybox.get()
+        if msg=='':
+            return
+        entrybox.delete(0,END)
+        chatbox.insert(END,"You : "+msg)
+        secret_number = 3
+        p = 23
+        g = 5
+        A = (g ** secret_number) % p
+        n.send(bytes(str(A), 'utf8'))
+        B=n.recv(1024).decode()
+        key=(int(B)**secret_number)%p
+
+        encrypted_message=''
+        for i in msg:
+            encrypted_message= encrypted_message+chr(ord(i)+key)
+        n.send(encrypted_message.encode())
+    else:
+        msg=entrybox.get()
+        entrybox.delete(0, END)
+        encrypted_message=''
+        for i in msg:
+            encrypted_message=encrypted_message+chr(ord(i)+key)
+        n.send(encrypted_message.encode())
+        chatbox.insert(END,"You : "+msg)
+        chatbox.see(END)
+
+
+label1=Label(text="Alex",bg='#119E2D',fg='white',font=("times new roman",18,"italic","bold"),anchor='w', width=40)
+label1.place(x=0,y=0)
+
+button=Button(person2,image=photo1,command=function1,borderwidth=0)
+button.place(x=225,y=10)
+
+chatbox=Listbox(person2,height=20,width=43,font=("calibri",18,"bold"),bd=4)
+chatbox.place(x=10,y=60)
+
+message=StringVar()
+
+entrybox=Entry(person2,textvariable=message,font=('calibre',18,'normal'),border=4,width=36)
+entrybox.place(x=10,y=680)
+
+send=PhotoImage(file='send1.png')
+
+button2=Button(person2,image=send,command=function2,borderwidth=0,bg='white')
+button2.place(x=490,y=680)
+
+
+chatbox.see(20)
+person2.mainloop()
