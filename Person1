@@ -18,7 +18,7 @@ def function_receive():
     ls = socket.socket()
     port_number = 8999
     most = 99
-    ls.bind(('192.168.43.235', port_number))
+    ls.bind(('#.#.#.#', port_number))
     ls.listen(most)
     (other_person, ip) = ls.accept()
 
@@ -47,7 +47,7 @@ def function_send():
     global n,key
     if n==0:
         n=socket.socket()
-        ip='192.168.43.235'
+        ip='#.#.#.#'
         port=7999
         n.connect((ip,port))
         msg=entrybox.get()
