@@ -1,6 +1,7 @@
 # Diffie-Hellman-in-chat-app
 Using Diffie-Hellman Key Exchange method in Chat Application
 This is simple implementation of Diffie-Hellman Key Exchange method.
+Person1 and Person2 are the code for Two persons respectively.
 To run the code perform following task:
  1. Download image for the start and send button and name according to the code.
  2. Inplace of '#.#.#.#' replace it with your own IP Address.
